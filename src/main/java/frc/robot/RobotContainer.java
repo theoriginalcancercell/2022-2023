@@ -5,14 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PS4Controller;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.HatchSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,7 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final HatchSubsystem m_hatchSubsystem = new HatchSubsystem();
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
 
   // Retained command handles
 
@@ -31,8 +34,11 @@ public class RobotContainer {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   // The driver's controller
-  CommandPS4Controller m_driverController =
-      new CommandPS4Controller(OIConstants.kDriverControllerPort);
+  CommandXboxController m_driverController =
+      new CommandXboxController(OIConstants.kDriverControllerPort);
+
+  CommandXboxController m_armController =
+      new CommandXboxController(OIConstants.kArmControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -49,7 +55,10 @@ public class RobotContainer {
                 m_robotDrive.arcadeDrive(
                     -m_driverController.getLeftY(), -m_driverController.getRightX()),
             m_robotDrive));
+    
+    Commands.run(() -> m_armSubsystem.TelescopeArm(m_armController.getLeftX()));
 
+    Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightX()));
     
     // Put the chooser on the dashboard
     Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -62,13 +71,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Grab the hatch when the Circle button is pressed.
-    m_driverController.circle().onTrue(m_hatchSubsystem.grabHatchCommand());
-    // Release the hatch when the Square button is pressed.
-    m_driverController.square().onTrue(m_hatchSubsystem.releaseHatchCommand());
+    // Binds the four buttons to arm positions
+    m_armController.b().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.closedAngle));
+    m_armController.a().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.maxAngle));
+    m_armController.y().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelOneAngle));
+    m_armController.x().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
+
+    m_armController.rightTrigger().onTrue(m_armSubsystem.TelescopeArm(1));
+
     // While holding R1, drive at half speed
     m_driverController
-        .R1()
+        .rightTrigger()
         .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.5)))
         .onFalse(Commands.runOnce(() -> m_robotDrive.setMaxOutput(1)));
   }

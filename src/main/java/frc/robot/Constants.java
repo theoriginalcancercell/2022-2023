@@ -35,6 +35,31 @@ public final class Constants {
     public static final int armActuatingMotorPort = 0;
 
     public static final int analogVerticalPotentiometerPort = 0;
+
+    public static final float potentiometerMaxValue = 0;
+    public static final float potentiometerMinValue = 0;
+
+    //This is the bottom actuator mount along the rear of the robot to the mounting point of the arm's pivot
+    public static final float actuatorMountDistanceToArmPivot = 0;
+    //This is the arm pivot to the point where the arm and the actuator are connected
+    public static final float armPivotToArmActuatorMount = 0;
+
+    public static final float verticalMovementTargetThreshold = 0;
+
+    public static final float actuatorSpeed = 0.5f;
+    public static final float spoolSpeed = 0.5f;
+
+    //Targeted angles for the vertical movement
+    public static final float closedAngle = 0;
+    public static final float levelOneAngle = 0;
+    public static final float levelTwoAngle = 0;
+    public static final float maxAngle = 0;
+  }
+
+  public static final class ClawConstants{
+    public static final int clawMotorPort = 0;
+
+    public static final double clawMotorSpeed = 1;
   }
 
   public static final class HatchConstants {
@@ -50,5 +75,6 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kArmControllerPort = 1;
   }
 }
