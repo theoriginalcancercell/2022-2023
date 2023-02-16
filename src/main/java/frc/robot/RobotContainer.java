@@ -56,9 +56,9 @@ public class RobotContainer {
                     -m_driverController.getLeftY(), -m_driverController.getRightX()),
             m_robotDrive));
     
-    Commands.run(() -> m_armSubsystem.TelescopeArm(m_armController.getLeftX()));
+    Commands.run(() -> m_armSubsystem.TelescopeArm(m_armController.getLeftY()));
 
-    Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightX()));
+    Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
     
     // Put the chooser on the dashboard
     Shuffleboard.getTab("Autonomous").add(m_chooser);
