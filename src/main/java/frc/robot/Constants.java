@@ -32,40 +32,46 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int armActuatingMotorPort = 0;
+    public static final int armActuatingMotorPort = 4;
+    public static final int armTelescopingMotorPort = 5;
 
     public static final int analogVerticalPotentiometerPort = 0;
 
-    public static final float potentiometerMaxValue = 0;
-    public static final float potentiometerMinValue = 0;
+    public static final float potentiometerMaxValue = 0.8888f;
+    public static final float potentiometerMinValue = 0.0276f;
 
     //This is the bottom actuator mount along the rear of the robot to the mounting point of the arm's pivot
-    public static final float actuatorMountDistanceToArmPivot = 0;
+    public static final float actuatorMountDistanceToArmPivot = 22;
     //This is the arm pivot to the point where the arm and the actuator are connected
-    public static final float armPivotToArmActuatorMount = 0;
+    public static final float armPivotToArmActuatorMount = 8;
+    public static final float actuatorClosedLength = 19.5f;
 
-    public static final float verticalMovementTargetThreshold = 0;
+    public static final float verticalMovementTargetThreshold = 1f;
 
     public static final float actuatorSpeed = 0.5f;
     public static final float spoolSpeed = 0.5f;
 
     //Targeted angles for the vertical movement
-    public static final float closedAngle = 0;
-    public static final float levelOneAngle = 0;
-    public static final float levelTwoAngle = 0;
-    public static final float maxAngle = 0;
+    public static final float closedAngle = 70;
+    public static final float levelOneAngle = 90;
+    public static final float levelTwoAngle = 100;
+    public static final float maxAngle = 120;
   }
 
   public static final class ClawConstants{
-    public static final int clawMotorPort = 0;
+    public static final int clawMotorPort = 6;
 
     public static final double clawMotorSpeed = 1;
   }
 
-  public static final class HatchConstants {
-    public static final int kHatchSolenoidModule = 0;
-    public static final int[] kHatchSolenoidPorts = new int[] {0, 1};
+  public static final class LEDLightsConstants{
+    public static final int ledPort = 7;
   }
+
+  // public static final class HatchConstants {
+  //   public static final int kHatchSolenoidModule = 0;
+  //   public static final int[] kHatchSolenoidPorts = new int[] {0, 1};
+  // }
 
   public static final class AutoConstants {
     public static final double kAutoDriveDistanceInches = 60;

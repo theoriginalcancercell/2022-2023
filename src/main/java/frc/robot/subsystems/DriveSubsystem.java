@@ -41,7 +41,16 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+    m_drive.arcadeDrive(-scaleJoysticks(fwd), rot);
+  }
+
+  public void curvatureDrive(double fwd, double rot) {
+    System.out.println(rot);
+    m_drive.curvatureDrive(-scaleJoysticks(fwd), rot, Math.abs(fwd) < 0.05);
+  }
+
+  public double scaleJoysticks(double input){
+    return Math.pow(input, 3);
   }
 
   /**

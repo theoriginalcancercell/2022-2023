@@ -52,11 +52,11 @@ public class RobotContainer {
         // hand, and turning controlled by the right.
         Commands.run(
             () ->
-                m_robotDrive.arcadeDrive(
+                m_robotDrive.curvatureDrive(
                     -m_driverController.getLeftY(), -m_driverController.getRightX()),
             m_robotDrive));
     
-    Commands.run(() -> m_armSubsystem.TelescopeArm(m_armController.getLeftY()));
+    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
 
     Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
     
@@ -72,10 +72,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Binds the four buttons to arm positions
-    m_armController.b().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.closedAngle));
-    m_armController.a().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.maxAngle));
-    m_armController.y().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelOneAngle));
-    m_armController.x().onTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
+    m_armController.b().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.closedAngle));
+    m_armController.a().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.maxAngle));
+    m_armController.y().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelOneAngle));
+    m_armController.x().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
 
     m_armController.rightTrigger().onTrue(m_armSubsystem.TelescopeArm(1));
 
