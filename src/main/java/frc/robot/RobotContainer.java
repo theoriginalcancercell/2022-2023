@@ -60,7 +60,7 @@ public class RobotContainer {
     
     m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
 
-    Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
+    //Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
 
     //Initialize the lights
     m_LightSubsytem.InitializeLights();
@@ -77,8 +77,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Binds the four buttons to arm positions
-    m_armController.b().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.closedAngle));
-    m_armController.a().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.maxAngle));
+    m_armController.b().whileTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.closedAngle)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+        
+    m_armController.a().whileTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelOneAngle)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
     m_armController.y().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelOneAngle));
     m_armController.x().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
 

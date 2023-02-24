@@ -45,7 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void curvatureDrive(double fwd, double rot) {
-    System.out.println(rot);
     m_drive.curvatureDrive(-scaleJoysticks(fwd), rot, Math.abs(fwd) < 0.05);
   }
 

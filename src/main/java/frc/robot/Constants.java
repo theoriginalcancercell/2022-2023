@@ -48,7 +48,7 @@ public final class Constants {
     public static final float armPivotToArmActuatorMount = 8;
     public static final float actuatorClosedLength = 19.5f;
 
-    public static final float verticalMovementTargetThreshold = 1f;
+    public static final float verticalMovementTargetThreshold = .25f;
 
     public static final float actuatorSpeed = 0.5f;
     public static final float spoolSpeed = 0.5f;

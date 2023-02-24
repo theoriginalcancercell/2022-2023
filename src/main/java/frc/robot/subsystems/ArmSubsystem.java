@@ -27,6 +27,12 @@ public class ArmSubsystem extends SubsystemBase {
          * Returns true if we have reached the desired point
          */
 
+        if(Math.abs(Math.toRadians(angle) - GetArmAngle()) < ArmConstants.verticalMovementTargetThreshold){
+            StopArmVertical();
+
+            return;
+        }
+
         //Find the current angle
         double currentAngle = GetArmAngle();
         //System.out.println(Math.toDegrees( currentAngle));
@@ -40,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        System.out.println(Math.toDegrees( GetArmAngle()));
     }
 
     public double GetArmAngle(){
@@ -56,6 +62,10 @@ public class ArmSubsystem extends SubsystemBase {
                                /(2 * ArmConstants.actuatorMountDistanceToArmPivot * ArmConstants.armPivotToArmActuatorMount));
 
         return currentAngle;
+    }
+
+    public void StopArmVertical(){
+        m_armVertical.stopMotor();
     }
 
     public void setArmSpeed(double input) {
