@@ -9,6 +9,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LightSubsytem;
 import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +28,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
+  private final LightSubsytem m_LightSubsytem = new LightSubsytem();
 
   // Retained command handles
 
@@ -59,6 +61,9 @@ public class RobotContainer {
     m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
 
     Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
+
+    //Initialize the lights
+    m_LightSubsytem.InitializeLights();
     
     // Put the chooser on the dashboard
     Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -78,6 +83,10 @@ public class RobotContainer {
     m_armController.x().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
 
     m_armController.rightTrigger().onTrue(m_armSubsystem.TelescopeArm(1));
+
+    m_driverController.a().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(0)));
+    m_driverController.x().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(1)));
+    m_driverController.y().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(2)));
 
     // While holding R1, drive at half speed
     m_driverController

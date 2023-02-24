@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -66,6 +68,9 @@ public final class Constants {
 
   public static final class LEDLightsConstants{
     public static final int ledPort = 7;
+    public static final int ledLength = 32;
+    //0 is off 1 is cube 2 is cone
+    public static final Color[] colors = new Color[] {new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 0)};
   }
 
   // public static final class HatchConstants {
