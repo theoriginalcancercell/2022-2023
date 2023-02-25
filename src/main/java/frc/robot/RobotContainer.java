@@ -6,13 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LightSubsytem;
+import frc.robot.subsystems.TelescopingSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,6 +30,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final TelescopingSubsystem m_telescopingSubsystem = new TelescopingSubsystem();
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
   private final LightSubsytem m_LightSubsytem = new LightSubsytem();
 
@@ -44,6 +48,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    SmartDashboard.putNumber("AutoWaitTime", AutoConstants.autoWaitTime);
+    SmartDashboard.putNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed);
+    SmartDashboard.putNumber("AutoDriveTime", AutoConstants.autoDriveDuration);
+
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -58,9 +67,9 @@ public class RobotContainer {
                     -m_driverController.getLeftY(), -m_driverController.getRightX()),
             m_robotDrive));
     
-    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
+    m_telescopingSubsystem.setDefaultCommand(Commands.run(() -> m_telescopingSubsystem.setArmSpeed(m_armController.getLeftY()), m_telescopingSubsystem));
 
-    //Commands.run(() -> m_clawSubsystem.RunClaw(m_armController.getRightY()));
+    m_clawSubsystem.setDefaultCommand(Commands.run(() -> m_clawSubsystem.setClawSpeed(m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()), m_clawSubsystem));
 
     //Initialize the lights
     m_LightSubsytem.InitializeLights();
@@ -77,15 +86,19 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Binds the four buttons to arm positions
-    m_armController.b().whileTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.closedAngle)))
+    m_armController.b().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.closedAngle)))
         .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
-        
-    m_armController.a().whileTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelOneAngle)))
+    m_armController.a().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.maxAngle)))
         .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
-    m_armController.y().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelOneAngle));
-    m_armController.x().whileTrue(m_armSubsystem.VerticalGoTo(ArmConstants.levelTwoAngle));
+    m_armController.y().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelOneAngle)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    m_armController.x().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelTwoAngle)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
 
-    m_armController.rightTrigger().onTrue(m_armSubsystem.TelescopeArm(1));
+    m_armController.rightBumper().whileTrue(Commands.runOnce(() -> m_armSubsystem.setArmSpeed(-1)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    m_armController.leftBumper().whileTrue(Commands.runOnce(() -> m_armSubsystem.setArmSpeed(1)))
+        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
 
     m_driverController.a().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(0)));
     m_driverController.x().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(1)));
@@ -104,6 +117,13 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_chooser.getSelected();
+System.out.println("getting command");
+
+    return //Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive).raceWith(Commands.waitSeconds(SmartDashboard.getNumber("AutoWaitTime", AutoConstants.autoWaitTime)))
+        //.andThen(
+          Commands.run(() -> m_robotDrive.arcadeDrive(.25, 0), m_robotDrive);
+        //.raceWith(Commands.waitSeconds(SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)));
+
+        //Commands.run(() -> System.out.println("Hi"));
   }
 }

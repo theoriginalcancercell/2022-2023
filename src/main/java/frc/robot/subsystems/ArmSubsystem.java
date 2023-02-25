@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -13,12 +12,7 @@ public class ArmSubsystem extends SubsystemBase {
     MotorController m_armVertical = new PWMSparkMax(ArmConstants.armActuatingMotorPort);
     AnalogPotentiometer verticalPotentiometer = new AnalogPotentiometer(ArmConstants.analogVerticalPotentiometerPort);
 
-    public MotorController m_armTelescoping = new PWMSparkMax(ArmConstants.armTelescopingMotorPort);
-    
-    public CommandBase VerticalGoTo(double angle) {
-        //Moves arm until the arm is within the correct threshold
-        return this.run(() -> VerticalMovement((angle))).until(() -> Math.abs(Math.toRadians(angle) - GetArmAngle()) < ArmConstants.verticalMovementTargetThreshold ).finallyDo((x) -> m_armVertical.stopMotor());
-    }
+    double targetAngle = GetArmAngle();
 
     public void VerticalMovement(double angle){
         /* Input angle is in degrees
@@ -27,7 +21,12 @@ public class ArmSubsystem extends SubsystemBase {
          * Returns true if we have reached the desired point
          */
 
-        if(Math.abs(Math.toRadians(angle) - GetArmAngle()) < ArmConstants.verticalMovementTargetThreshold){
+        targetAngle = angle;
+    }
+
+    @Override
+    public void periodic() {
+        if(Math.abs(Math.toRadians(targetAngle) - GetArmAngle()) < ArmConstants.verticalMovementTargetThreshold){
             StopArmVertical();
 
             return;
@@ -35,18 +34,13 @@ public class ArmSubsystem extends SubsystemBase {
 
         //Find the current angle
         double currentAngle = GetArmAngle();
-        //System.out.println(Math.toDegrees( currentAngle));
+        
         //Moves towards height and will be stopped by command system once within the target threshold
-        angle = Math.toRadians(angle);
+        targetAngle = Math.toRadians(targetAngle);
 
-        int direction = angle - currentAngle > 0 ? 1 : -1;
+        int direction = targetAngle - currentAngle > 0 ? 1 : -1;
 
         m_armVertical.set(ArmConstants.actuatorSpeed * direction);
-    }
-
-    @Override
-    public void periodic() {
-        System.out.println(Math.toDegrees( GetArmAngle()));
     }
 
     public double GetArmAngle(){
@@ -66,13 +60,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void StopArmVertical(){
         m_armVertical.stopMotor();
+
+        targetAngle = GetArmAngle();
     }
 
     public void setArmSpeed(double input) {
-        m_armTelescoping.set(input * ArmConstants.spoolSpeed);
-    }
+        m_armVertical.set(input * ArmConstants.actuatorSpeed);
 
-    public CommandBase TelescopeArm(double input){
-        return this.run(() -> m_armTelescoping.set(input * ArmConstants.spoolSpeed));
+        targetAngle = GetArmAngle();
     }
 }

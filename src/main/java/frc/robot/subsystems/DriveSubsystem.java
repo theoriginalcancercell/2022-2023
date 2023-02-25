@@ -41,6 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
+    System.out.print("Arcade Driving");
     m_drive.arcadeDrive(-scaleJoysticks(fwd), rot);
   }
 
@@ -51,6 +52,12 @@ public class DriveSubsystem extends SubsystemBase {
   public double scaleJoysticks(double input){
     return Math.pow(input, 3);
   }
+
+  @Override
+  public void periodic(){
+    System.out.println( getCurrentCommand());
+  }
+  
 
   /**
    * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.

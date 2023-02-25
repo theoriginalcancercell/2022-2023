@@ -34,8 +34,8 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int armActuatingMotorPort = 4;
-    public static final int armTelescopingMotorPort = 5;
+    public static final int armActuatingMotorPort = 5;
+    public static final int armTelescopingMotorPort = 4;
 
     public static final int analogVerticalPotentiometerPort = 0;
 
@@ -73,15 +73,10 @@ public final class Constants {
     public static final Color[] colors = new Color[] {new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 0)};
   }
 
-  // public static final class HatchConstants {
-  //   public static final int kHatchSolenoidModule = 0;
-  //   public static final int[] kHatchSolenoidPorts = new int[] {0, 1};
-  // }
-
   public static final class AutoConstants {
-    public static final double kAutoDriveDistanceInches = 60;
-    public static final double kAutoBackupDistanceInches = 20;
-    public static final double kAutoDriveSpeed = 0.5;
+    public static final double autoWaitTime = 2;
+    public static final double autoDriveSpeed = 0.25;
+    public static final double autoDriveDuration = 1;
   }
 
   public static final class OIConstants {
