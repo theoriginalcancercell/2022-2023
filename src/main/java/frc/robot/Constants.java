@@ -34,6 +34,9 @@ public final class Constants {
       
     public static final double balancingThreshold = .5f;
     public static final double balancingFractioningThreshold = 10f;
+
+    public static final double rotatingThreshold = .5f;
+    public static final double rotatingFractioningThreshold = 10f;
   }
 
   public static final class ArmConstants {

@@ -75,12 +75,22 @@ public class DriveSubsystem extends SubsystemBase {
 
     arcadeDrive(motorSpeed, 0);
   }
-
-  @Override
-  public void periodic(){
-    //System.out.println(gyro.getGyroAngleX());
-  }
   
+  public void RotateTo(double angle){
+    if (Math.abs(gyro.getGyroAngleZ()) - angle < DriveConstants.rotatingThreshold) {
+      arcadeDrive(0, 0);
+
+      return;
+    }
+
+    double motorSpeed = (gyro.getGyroAngleZ() - angle) / DriveConstants.rotatingFractioningThreshold;
+
+    if (Math.abs(motorSpeed) > 1) {
+      motorSpeed = Math.copySign(1, motorSpeed);
+    }
+
+    curvatureDrive(0, motorSpeed);
+  }
 
 
   /**

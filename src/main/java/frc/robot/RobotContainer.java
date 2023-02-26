@@ -88,7 +88,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_armController.a().whileTrue(Commands.runOnce(() -> m_armSubsystem.setArmSpeed(ClawConstants.clawHoldSpeed)));
+    m_armController.rightBumper().whileTrue(Commands.runOnce(() -> m_armSubsystem.setArmSpeed(ClawConstants.clawHoldSpeed)));
 
     m_driverController.a().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(0)));
     m_driverController.x().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(1)));
@@ -97,10 +97,21 @@ public class RobotContainer {
     m_driverController.start().whileTrue(Commands.runOnce(() -> m_robotDrive.Balance(), m_robotDrive))
       .onFalse(Commands.runOnce(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive));
 
+    //Rotate towards the starting direction or the other direction when bumpers are held
+    m_driverController.rightBumper()
+      .whileTrue(Commands.runOnce(() -> m_robotDrive.RotateTo(0)));
+    m_driverController.leftBumper()
+      .whileTrue(Commands.runOnce(() -> m_robotDrive.RotateTo(180)));
+
     // While holding Right Trigger, drive at half speed
     m_driverController
         .rightTrigger()
         .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.5)))
+        .onFalse(Commands.runOnce(() -> m_robotDrive.setMaxOutput(1)));
+    
+    m_driverController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.25)))
         .onFalse(Commands.runOnce(() -> m_robotDrive.setMaxOutput(1)));
   }
 
