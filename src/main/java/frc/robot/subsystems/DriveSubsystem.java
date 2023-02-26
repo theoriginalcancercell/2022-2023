@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -23,6 +24,8 @@ public class DriveSubsystem extends SubsystemBase {
           new PWMSparkMax(DriveConstants.kRightMotor1Port),
           new PWMSparkMax(DriveConstants.kRightMotor2Port));
 
+  ADIS16448_IMU gyro = new ADIS16448_IMU();
+
   // The robot's drive
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
@@ -32,6 +35,10 @@ public class DriveSubsystem extends SubsystemBase {
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     m_rightMotors.setInverted(true);
+
+    m_drive.arcadeDrive(0, 0);
+    
+    gyro.calibrate();
 }
 
   /**
@@ -41,8 +48,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    System.out.print("Arcade Driving");
-    m_drive.arcadeDrive(-scaleJoysticks(fwd), rot);
+    System.out.print("Arcade Driving " + fwd);
+    m_drive.arcadeDrive(-fwd, rot);
   }
 
   public void curvatureDrive(double fwd, double rot) {
@@ -53,11 +60,28 @@ public class DriveSubsystem extends SubsystemBase {
     return Math.pow(input, 3);
   }
 
+  public void Balance(){
+    if (Math.abs(gyro.getGyroAngleX()) < DriveConstants.balancingThreshold) {
+      arcadeDrive(0, 0);
+
+      return;
+    }
+
+    double motorSpeed = gyro.getGyroAngleX() / DriveConstants.balancingFractioningThreshold;
+
+    if (Math.abs(motorSpeed) > 1) {
+      motorSpeed = Math.copySign(1, motorSpeed);
+    }
+
+    arcadeDrive(motorSpeed, 0);
+  }
+
   @Override
   public void periodic(){
-    System.out.println( getCurrentCommand());
+    //System.out.println(gyro.getGyroAngleX());
   }
   
+
 
   /**
    * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.

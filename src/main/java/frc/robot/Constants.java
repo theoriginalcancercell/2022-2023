@@ -31,11 +31,14 @@ public final class Constants {
     public static final double kEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
         (kWheelDiameterInches * Math.PI) / (double) kEncoderCPR;
+      
+    public static final double balancingThreshold = .5f;
+    public static final double balancingFractioningThreshold = 10f;
   }
 
   public static final class ArmConstants {
-    public static final int armActuatingMotorPort = 5;
-    public static final int armTelescopingMotorPort = 4;
+    public static final int armActuatingMotorPort = 4;
+    public static final int armTelescopingMotorPort = 5;
 
     public static final int analogVerticalPotentiometerPort = 0;
 
@@ -43,27 +46,29 @@ public final class Constants {
     public static final float potentiometerMinValue = 0.0276f;
 
     //This is the bottom actuator mount along the rear of the robot to the mounting point of the arm's pivot
-    public static final float actuatorMountDistanceToArmPivot = 22;
+    public static final float actuatorMountDistanceToArmPivot = 30.5f;
     //This is the arm pivot to the point where the arm and the actuator are connected
-    public static final float armPivotToArmActuatorMount = 8;
-    public static final float actuatorClosedLength = 19.5f;
+    public static final float armPivotToArmActuatorMount = 9.75f;
+    public static final float actuatorClosedLength = 21f;
 
     public static final float verticalMovementTargetThreshold = .25f;
 
-    public static final float actuatorSpeed = 0.5f;
-    public static final float spoolSpeed = 0.5f;
+    public static final float actuatorSpeed = 0.75f;
+    
+    public static final float inwardTelescoping = 0.25f;
+    public static final float outwardTelescoping = 0.8f;
 
     //Targeted angles for the vertical movement
-    public static final float closedAngle = 70;
-    public static final float levelOneAngle = 90;
-    public static final float levelTwoAngle = 100;
-    public static final float maxAngle = 120;
+    public static final float closedAngle = 3;
+    public static final float levelOneAngle = 6;
+    public static final float levelTwoAngle = 9;
+    public static final float maxAngle = 11.5f;
   }
 
   public static final class ClawConstants{
     public static final int clawMotorPort = 6;
 
-    public static final double clawMotorSpeed = 1;
+    public static final double clawMotorSpeed = .5;
   }
 
   public static final class LEDLightsConstants{
@@ -75,7 +80,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double autoWaitTime = 2;
-    public static final double autoDriveSpeed = 0.25;
+    public static final double autoDriveSpeed = 0.5;
     public static final double autoDriveDuration = 1;
   }
 

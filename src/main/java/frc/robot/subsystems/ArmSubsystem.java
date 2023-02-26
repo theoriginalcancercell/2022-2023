@@ -12,61 +12,64 @@ public class ArmSubsystem extends SubsystemBase {
     MotorController m_armVertical = new PWMSparkMax(ArmConstants.armActuatingMotorPort);
     AnalogPotentiometer verticalPotentiometer = new AnalogPotentiometer(ArmConstants.analogVerticalPotentiometerPort);
 
-    double targetAngle = GetArmAngle();
+    double targetLength = GetArmLength();
 
-    public void VerticalMovement(double angle){
+    boolean autoRun = false;
+
+    public void VerticalMovement(double length){
         /* Input angle is in degrees
          * This will calculate the current length of the actuator and utilizes that to find the angle
          * Then for now will set the motor to move to the desired position leaving a threshold of error
          * Returns true if we have reached the desired point
          */
 
-        targetAngle = angle;
+        targetLength = length;
+        
+        autoRun = true;
     }
 
     @Override
     public void periodic() {
-        if(Math.abs(Math.toRadians(targetAngle) - GetArmAngle()) < ArmConstants.verticalMovementTargetThreshold){
+        if (!autoRun) {
+            return;
+        }
+        
+        if(Math.abs(targetLength - GetArmLength()) < ArmConstants.verticalMovementTargetThreshold){
             StopArmVertical();
 
             return;
         }
 
         //Find the current angle
-        double currentAngle = GetArmAngle();
-        
-        //Moves towards height and will be stopped by command system once within the target threshold
-        targetAngle = Math.toRadians(targetAngle);
+        double currentLength = GetArmLength();
 
-        int direction = targetAngle - currentAngle > 0 ? 1 : -1;
+        int direction = targetLength - currentLength > 0 ? 1 : -1;
 
         m_armVertical.set(ArmConstants.actuatorSpeed * direction);
     }
 
-    public double GetArmAngle(){
+    public double GetArmLength(){
         double potentiometerOutput = verticalPotentiometer.get();
-        
+        System.out.println(potentiometerOutput);
         potentiometerOutput -= ArmConstants.potentiometerMinValue;
         potentiometerOutput /= (ArmConstants.potentiometerMaxValue - ArmConstants.potentiometerMinValue);
 
-        double currentActuatorLength = 12 * potentiometerOutput + ArmConstants.actuatorClosedLength;
-        
-        //Law of Cosines to find the current angle
-        double currentAngle = Math.acos((Math.pow(ArmConstants.actuatorMountDistanceToArmPivot, 2) + Math.pow(ArmConstants.armPivotToArmActuatorMount, 2) - Math.pow(currentActuatorLength,2))
-                               /(2 * ArmConstants.actuatorMountDistanceToArmPivot * ArmConstants.armPivotToArmActuatorMount));
+        double currentActuatorLength = 12 * potentiometerOutput;
 
-        return currentAngle;
+        return currentActuatorLength;
     }
 
     public void StopArmVertical(){
         m_armVertical.stopMotor();
+        
+        autoRun = false;
 
-        targetAngle = GetArmAngle();
+        targetLength = GetArmLength();
     }
 
     public void setArmSpeed(double input) {
         m_armVertical.set(input * ArmConstants.actuatorSpeed);
-
-        targetAngle = GetArmAngle();
+        
+        autoRun = false;
     }
 }

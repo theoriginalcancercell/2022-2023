@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -52,7 +54,6 @@ public class RobotContainer {
     SmartDashboard.putNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed);
     SmartDashboard.putNumber("AutoDriveTime", AutoConstants.autoDriveDuration);
 
-
     // Configure the button bindings
     configureButtonBindings();
 
@@ -69,7 +70,7 @@ public class RobotContainer {
     
     m_telescopingSubsystem.setDefaultCommand(Commands.run(() -> m_telescopingSubsystem.setArmSpeed(m_armController.getLeftY()), m_telescopingSubsystem));
 
-    m_clawSubsystem.setDefaultCommand(Commands.run(() -> m_clawSubsystem.setClawSpeed(m_driverController.getRightTriggerAxis() - m_driverController.getLeftTriggerAxis()), m_clawSubsystem));
+    m_clawSubsystem.setDefaultCommand(Commands.run(() -> m_clawSubsystem.setClawSpeed(m_armController.getRightTriggerAxis() - m_armController.getLeftTriggerAxis()), m_clawSubsystem));
 
     //Initialize the lights
     m_LightSubsytem.InitializeLights();
@@ -85,15 +86,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Binds the four buttons to arm positions
-    m_armController.b().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.closedAngle)))
-        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
-    m_armController.a().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.maxAngle)))
-        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
-    m_armController.y().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelOneAngle)))
-        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
-    m_armController.x().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelTwoAngle)))
-        .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    // // Binds the four buttons to arm positions
+    // m_armController.b().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.closedAngle)))
+    //     .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    // m_armController.a().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.maxAngle)))
+    //     .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    // m_armController.y().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelOneAngle)))
+    //     .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
+    // m_armController.x().onTrue(Commands.runOnce(() -> m_armSubsystem.VerticalMovement(ArmConstants.levelTwoAngle)))
+    //     .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
 
     m_armController.rightBumper().whileTrue(Commands.runOnce(() -> m_armSubsystem.setArmSpeed(-1)))
         .onFalse(Commands.runOnce(() -> m_armSubsystem.StopArmVertical()));
@@ -104,7 +105,10 @@ public class RobotContainer {
     m_driverController.x().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(1)));
     m_driverController.y().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(2)));
 
-    // While holding R1, drive at half speed
+    m_driverController.start().whileTrue(Commands.runOnce(() -> m_robotDrive.Balance(), m_robotDrive))
+      .onFalse(Commands.runOnce(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive));
+
+    // While holding Right Trigger, drive at half speed
     m_driverController
         .rightTrigger()
         .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.5)))
@@ -119,11 +123,21 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 System.out.println("getting command");
 
-    return //Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive).raceWith(Commands.waitSeconds(SmartDashboard.getNumber("AutoWaitTime", AutoConstants.autoWaitTime)))
-        //.andThen(
-          Commands.run(() -> m_robotDrive.arcadeDrive(.25, 0), m_robotDrive);
-        //.raceWith(Commands.waitSeconds(SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)));
-
+    return //(Commands.run(() -> Commands.waitSeconds(/*SmartDashboard.getNumber("AutoWaitTime", AutoConstants.autoWaitTime)*/ 1))
+        //.raceWith(Commands.run(() -> /*m_robotDrive.arcadeDrive(0, 0)*/ System.out.println(0))))
+        //.andThen((Commands.run(() -> /*m_robotDrive.arcadeDrive(SmartDashboard.getNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed), 0)*/ System.out.println(1)))
+        //.raceWith(Commands.waitSeconds(/*SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)*/ 1)));
+        new SequentialCommandGroup(
+          new ParallelRaceGroup(
+            Commands.waitSeconds(SmartDashboard.getNumber("AutoWaitTime", AutoConstants.autoWaitTime)),
+            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          ),
+          new ParallelRaceGroup(
+            Commands.waitSeconds(SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)),
+            Commands.run(() -> m_robotDrive.arcadeDrive(SmartDashboard.getNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed), 0), m_robotDrive)
+          )
+        )
+        ;
         //Commands.run(() -> System.out.println("Hi"));
   }
 }
