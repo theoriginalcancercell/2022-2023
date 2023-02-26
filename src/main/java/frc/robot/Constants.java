@@ -69,6 +69,8 @@ public final class Constants {
     public static final int clawMotorPort = 6;
 
     public static final double clawMotorSpeed = .5;
+
+    public static final double clawHoldSpeed = -0.1;
   }
 
   public static final class LEDLightsConstants{
