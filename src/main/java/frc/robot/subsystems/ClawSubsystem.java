@@ -12,6 +12,10 @@ public class ClawSubsystem extends SubsystemBase {
         clawMotor.set(input * ClawConstants.clawMotorSpeed);
     }
 
+    public void setClawSpeedDirect(double input){
+        clawMotor.set(input);
+    }
+
     public void stopClaw(){
         clawMotor.stopMotor();
     }

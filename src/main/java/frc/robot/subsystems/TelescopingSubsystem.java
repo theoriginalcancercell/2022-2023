@@ -9,6 +9,10 @@ public class TelescopingSubsystem extends SubsystemBase {
     MotorController m_armTelescoping = new PWMSparkMax(ArmConstants.armTelescopingMotorPort);
     
     public void setArmSpeed(double input) {
-        m_armTelescoping.set(-input > 0 ? ArmConstants.outwardTelescoping * -input : ArmConstants.inwardTelescoping * -input);
+        m_armTelescoping.set(-1 * (input > 0 ? ArmConstants.outwardTelescoping * -input : ArmConstants.inwardTelescoping * -input));
+    }
+
+    public void setArmSpeedDirect(double input) {
+        m_armTelescoping.set(input);
     }
 }

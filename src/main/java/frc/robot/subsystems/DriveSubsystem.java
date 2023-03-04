@@ -48,7 +48,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    System.out.print("Arcade Driving " + fwd);
     m_drive.arcadeDrive(-fwd, rot);
   }
 
@@ -61,34 +60,35 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void Balance(){
-    if (Math.abs(gyro.getGyroAngleX()) < DriveConstants.balancingThreshold) {
+    if (Math.abs(gyro.getGyroAngleY()) < DriveConstants.balancingThreshold) {
       arcadeDrive(0, 0);
 
       return;
     }
-
-    double motorSpeed = gyro.getGyroAngleX() / DriveConstants.balancingFractioningThreshold;
+    
+    double motorSpeed = gyro.getGyroAngleY() / DriveConstants.balancingFractioningThreshold + Math.copySign(0.35, gyro.getGyroAngleY());
 
     if (Math.abs(motorSpeed) > 1) {
       motorSpeed = Math.copySign(1, motorSpeed);
     }
-
+    
     arcadeDrive(motorSpeed, 0);
   }
   
   public void RotateTo(double angle){
-    if (Math.abs(gyro.getGyroAngleZ()) - angle < DriveConstants.rotatingThreshold) {
+    
+    if (Math.abs(gyro.getGyroAngleZ() + angle) < DriveConstants.rotatingThreshold) {
       arcadeDrive(0, 0);
 
       return;
     }
 
-    double motorSpeed = (gyro.getGyroAngleZ() - angle) / DriveConstants.rotatingFractioningThreshold;
+    double motorSpeed = (gyro.getGyroAngleZ() + angle) / DriveConstants.rotatingFractioningThreshold + Math.copySign(0.2, (gyro.getGyroAngleZ() + angle));
 
     if (Math.abs(motorSpeed) > 1) {
       motorSpeed = Math.copySign(1, motorSpeed);
     }
-
+    
     curvatureDrive(0, motorSpeed);
   }
 

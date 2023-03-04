@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.util.Color;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -32,11 +30,11 @@ public final class Constants {
         // Assumes the encoders are directly mounted on the wheel shafts
         (kWheelDiameterInches * Math.PI) / (double) kEncoderCPR;
       
-    public static final double balancingThreshold = .5f;
-    public static final double balancingFractioningThreshold = 10f;
+    public static final double balancingThreshold = 2;
+    public static final double balancingFractioningThreshold = 55;
 
-    public static final double rotatingThreshold = .5f;
-    public static final double rotatingFractioningThreshold = 10f;
+    public static final double rotatingThreshold = .25;
+    public static final double rotatingFractioningThreshold = 90;
   }
 
   public static final class ArmConstants {
@@ -58,8 +56,9 @@ public final class Constants {
 
     public static final float actuatorSpeed = 0.75f;
     
-    public static final float inwardTelescoping = 0.25f;
-    public static final float outwardTelescoping = 0.8f;
+    //These variables were switched around inward is outward and outward is inward
+    public static final float inwardTelescoping = -0.8f;
+    public static final float outwardTelescoping = -0.25f;
 
     //Targeted angles for the vertical movement
     public static final float closedAngle = 3;
@@ -71,22 +70,32 @@ public final class Constants {
   public static final class ClawConstants{
     public static final int clawMotorPort = 6;
 
-    public static final double clawMotorSpeed = .5;
+    public static final double clawMotorSpeed = .75;
 
-    public static final double clawHoldSpeed = -0.1;
+    public static final double clawHoldSpeed = -0.35;
   }
 
-  public static final class LEDLightsConstants{
-    public static final int ledPort = 7;
-    public static final int ledLength = 32;
-    //0 is off 1 is cube 2 is cone
-    public static final Color[] colors = new Color[] {new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 0)};
-  }
+  // public static final class LEDLightsConstants{
+  //   public static final int ledPort = 7;
+  //   public static final int ledLength = 32;
+  //   //0 is off 1 is cube 2 is cone
+  //   public static final Color[] colors = new Color[] {new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 0)};
+  // }
 
   public static final class AutoConstants {
-    public static final double autoWaitTime = 2;
+    public static final double autoWaitTime = 0;
     public static final double autoDriveSpeed = 0.5;
-    public static final double autoDriveDuration = 1;
+    public static final double autoDriveDuration = 6.5;
+
+    public static final double autoArmRaiseDuration = 2.2;
+    public static final double autoArmRaiseSpeed = 0.75;
+    public static final double autoArmOutDuration = .9;
+    public static final double autoArmOutSpeed = 0.75;
+    public static final double autoArmDownDuration = 1;
+    public static final double autoArmDownSpeed = -0.75;
+    public static final double autoArmInSpeed = -0.35;
+    public static final double balanceTime = 0;
+    
   }
 
   public static final class OIConstants {
