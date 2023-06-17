@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.3.2"
+    id "edu.wpi.first.GradleRIO" version "2023.4.3"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -64,6 +64,11 @@ dependencies {
     nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
+    
+    // //Add JUNIT 4
+    // testImplementation 'junit:junit:4.13'
+    // //Add mockito library
+    // testImplementation 'org.mockito:mockito-core:2.7.22'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'

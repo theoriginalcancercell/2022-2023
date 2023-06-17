@@ -52,6 +52,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    //Adds variables for autonomous to the smartdashboard
     SmartDashboard.putNumber("AutoWaitTime", AutoConstants.autoWaitTime);
     SmartDashboard.putNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed);
     SmartDashboard.putNumber("AutoDriveTime", AutoConstants.autoDriveDuration);
@@ -77,18 +78,20 @@ public class RobotContainer {
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
     m_robotDrive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
+        // Sets up curvature drive based on the left stick axis of motion
         Commands.run(
             () ->
                 m_robotDrive.curvatureDrive(
                     -m_driverController.getLeftY(), -m_driverController.getRightX()),
             m_robotDrive));
     
+    //Makes the telescoping mechanism run on the right stick's up and down
     m_telescopingSubsystem.setDefaultCommand(Commands.run(() -> m_telescopingSubsystem.setArmSpeed(m_armController.getRightY()), m_telescopingSubsystem));
 
-    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
+    //Sets the arm subsystems to run the set arm speed function based on the left stick's up and down
+    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.SetArmSpeed(m_armController.getLeftY()), m_armSubsystem));
 
+    //Sets the claw speed equal to the difference of the inputs of the triggers so one pushes game pieces out and one pulls them in
     m_clawSubsystem.setDefaultCommand(Commands.run(() -> m_clawSubsystem.setClawSpeed(m_armController.getLeftTriggerAxis() - m_armController.getRightTriggerAxis()), m_clawSubsystem));
 
     // //Initialize the lights
@@ -105,13 +108,18 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //Links the right bumper to turn the claw motors holding pieces in place
     m_armController.rightBumper().whileTrue(Commands.run(() -> m_clawSubsystem.setClawSpeed(ClawConstants.clawHoldSpeed)));
+
+    //When the left bumper is pressed the claw throws at full force
     m_armController.leftBumper().whileTrue(Commands.run(() -> m_clawSubsystem.setClawSpeedDirect(1)));
 
+    //Sets the led lights based on button inputs from the driver controller
     // m_driverController.a().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(0)));
     // m_driverController.x().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(1)));
     // m_driverController.y().onTrue(Commands.runOnce(() -> m_LightSubsytem.ChangeLightState(2)));
 
+    //Runs the autobalance function while holding start then zeroes the motors on release
     m_driverController.start().whileTrue(Commands.print("running").andThen(new RepeatCommand(Commands.run(() -> m_robotDrive.Balance(), m_robotDrive))))
       .onFalse(Commands.runOnce(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive));
 
@@ -126,7 +134,8 @@ public class RobotContainer {
         .rightTrigger()
         .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.5)))
         .onFalse(Commands.runOnce(() -> m_robotDrive.setMaxOutput(1)));
-    
+        
+    // While holding left drigger, drive at 1/4 speed
     m_driverController
         .leftTrigger()
         .onTrue(Commands.runOnce(() -> m_robotDrive.setMaxOutput(0.25)))
