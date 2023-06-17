@@ -31,7 +31,7 @@ public final class Constants {
         (kWheelDiameterInches * Math.PI) / (double) kEncoderCPR;
       
     public static final double balancingThreshold = 2;
-    public static final double balancingFractioningThreshold = 55;
+    public static final double balancingFractioningThreshold = 60;
 
     public static final double rotatingThreshold = .25;
     public static final double rotatingFractioningThreshold = 90;

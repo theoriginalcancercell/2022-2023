@@ -66,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
       return;
     }
     
-    double motorSpeed = gyro.getGyroAngleY() / DriveConstants.balancingFractioningThreshold + Math.copySign(0.35, gyro.getGyroAngleY());
+    double motorSpeed = gyro.getGyroAngleY() / DriveConstants.balancingFractioningThreshold + Math.copySign(0.3, gyro.getGyroAngleY());
 
     if (Math.abs(motorSpeed) > 1) {
       motorSpeed = Math.copySign(1, motorSpeed);
