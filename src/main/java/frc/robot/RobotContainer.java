@@ -89,7 +89,7 @@ public class RobotContainer {
     m_telescopingSubsystem.setDefaultCommand(Commands.run(() -> m_telescopingSubsystem.setArmSpeed(m_armController.getRightY()), m_telescopingSubsystem));
 
     //Sets the arm subsystems to run the set arm speed function based on the left stick's up and down
-    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.SetArmSpeed(m_armController.getLeftY()), m_armSubsystem));
+    m_armSubsystem.setDefaultCommand(Commands.run(() -> m_armSubsystem.setArmSpeed(m_armController.getLeftY()), m_armSubsystem));
 
     //Sets the claw speed equal to the difference of the inputs of the triggers so one pushes game pieces out and one pulls them in
     m_clawSubsystem.setDefaultCommand(Commands.run(() -> m_clawSubsystem.setClawSpeed(m_armController.getLeftTriggerAxis() - m_armController.getRightTriggerAxis()), m_clawSubsystem));
@@ -159,42 +159,42 @@ public class RobotContainer {
         Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-      Commands.waitSeconds(SmartDashboard.getNumber("AutoArmRaiseDuration", AutoConstants.autoArmRaiseDuration)),
-            Commands.run(() -> m_armSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmRaiseSpeed", AutoConstants.autoArmRaiseSpeed)))
-              .finallyDo((end) -> m_armSubsystem.setArmSpeedDirect(0)),
-            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          Commands.waitSeconds(SmartDashboard.getNumber("AutoArmRaiseDuration", AutoConstants.autoArmRaiseDuration)),
+          Commands.run(() -> m_armSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmRaiseSpeed", AutoConstants.autoArmRaiseSpeed)))
+            .finallyDo((end) -> m_armSubsystem.setArmSpeedDirect(0)),
+          Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-        Commands.waitSeconds(SmartDashboard.getNumber("AutoArmOutDuration", AutoConstants.autoArmOutDuration)),
-            Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmOutSpeed", AutoConstants.autoArmOutSpeed)), m_telescopingSubsystem)
-              .finallyDo((end) -> m_telescopingSubsystem.setArmSpeedDirect(0)),
-            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          Commands.waitSeconds(SmartDashboard.getNumber("AutoArmOutDuration", AutoConstants.autoArmOutDuration)),
+          Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmOutSpeed", AutoConstants.autoArmOutSpeed)), m_telescopingSubsystem)
+            .finallyDo((end) -> m_telescopingSubsystem.setArmSpeedDirect(0)),
+          Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-        Commands.waitSeconds(1),
-            Commands.run(() -> m_clawSubsystem.setClawSpeed(.75), m_clawSubsystem)
-              .finallyDo((end) -> m_clawSubsystem.setClawSpeed(0)),
-            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          Commands.waitSeconds(1),
+          Commands.run(() -> m_clawSubsystem.setClawSpeed(.75), m_clawSubsystem)
+            .finallyDo((end) -> m_clawSubsystem.setClawSpeed(0)),
+          Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-        Commands.waitSeconds(SmartDashboard.getNumber("AutoArmDownDuration", AutoConstants.autoArmDownDuration)),
-            Commands.run(() -> m_armSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmDownSpeed", AutoConstants.autoArmDownSpeed)), m_armSubsystem),
-            Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmInSpeed", AutoConstants.autoArmInSpeed)), m_telescopingSubsystem),
-            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          Commands.waitSeconds(SmartDashboard.getNumber("AutoArmDownDuration", AutoConstants.autoArmDownDuration)),
+          Commands.run(() -> m_armSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmDownSpeed", AutoConstants.autoArmDownSpeed)), m_armSubsystem),
+          Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(SmartDashboard.getNumber("AutoArmInSpeed", AutoConstants.autoArmInSpeed)), m_telescopingSubsystem),
+          Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-        Commands.waitSeconds(.1),
-            Commands.run(() -> m_armSubsystem.setArmSpeedDirect(0), m_armSubsystem),
-            Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(0), m_telescopingSubsystem),
-            Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
+          Commands.waitSeconds(.1),
+          Commands.run(() -> m_armSubsystem.setArmSpeedDirect(0), m_armSubsystem),
+          Commands.run(() -> m_telescopingSubsystem.setArmSpeedDirect(0), m_telescopingSubsystem),
+          Commands.run(() -> m_robotDrive.arcadeDrive(0, 0), m_robotDrive)
       ),
       new ParallelRaceGroup(
-            Commands.waitSeconds(SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)),
-            Commands.run(() -> m_robotDrive.arcadeDrive(-SmartDashboard.getNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed), 0), m_robotDrive)
-          ),
+          Commands.waitSeconds(SmartDashboard.getNumber("AutoDriveTime", AutoConstants.autoDriveDuration)),
+          Commands.run(() -> m_robotDrive.arcadeDrive(-SmartDashboard.getNumber("AutoDriveSpeed", AutoConstants.autoDriveSpeed), 0), m_robotDrive)
+      ),
       new ParallelRaceGroup(
-        Commands.waitSeconds(SmartDashboard.getNumber("BalanceTime", AutoConstants.balanceTime)),
-        Commands.run(() -> m_robotDrive.Balance(), m_robotDrive)
+          Commands.waitSeconds(SmartDashboard.getNumber("BalanceTime", AutoConstants.balanceTime)),
+          Commands.run(() -> m_robotDrive.Balance(), m_robotDrive)
       )
     );
   }
