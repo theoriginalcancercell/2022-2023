@@ -9,14 +9,17 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 public class ArmSubsystem extends SubsystemBase {
     
+    //Initialize motors from variables in constants.java
     MotorController m_armVertical = new PWMSparkMax(ArmConstants.armActuatingMotorPort);
     AnalogPotentiometer verticalPotentiometer = new AnalogPotentiometer(ArmConstants.analogVerticalPotentiometerPort);
 
+    //Function to stop the arm
     public void StopArmVertical(){
         m_armVertical.stopMotor();
     }
 
-    public void setArmSpeed(double input) {
+    //Sets the speed of the arm motor
+    public void SetArmSpeed(double input) {
         m_armVertical.set(input * ArmConstants.actuatorSpeed);
     }
 }
