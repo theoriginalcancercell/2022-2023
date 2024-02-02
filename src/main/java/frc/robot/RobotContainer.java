@@ -142,6 +142,7 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_robotDrive.setMaxOutput(1)));
   }
 
+  //Gets the command that will be run during auto
   public Command getAutonomousCommand() {
     // return new SequentialCommandGroup(
     //       new ParallelRaceGroup(
